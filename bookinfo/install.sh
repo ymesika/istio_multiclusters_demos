@@ -3,27 +3,10 @@
 set +e
 set +x
 
-# IBM Cloud Private cluster context
-#CLUSTER_A="cluster.local-context"
-#INGRESS_A_TYPE="NodePort"
+. ./config.sh
 
-# EDIT ME - Cluster A Kubeconfig context
-CLUSTER_A="cluster-a"
-
-# EDIT ME - Cluster B Kubeconfig context
-CLUSTER_B="cluster-b"
-
-
-# Following variables shouldn't be when deploying on two IKS clusters
 CLUSTER_A_NAME=`echo $CLUSTER_A | tr A-Z a-z` # Lower case of context name
-INGRESS_A_TYPE="LoadBalancer"
-
 CLUSTER_B_NAME=`echo $CLUSTER_B | tr A-Z a-z` # Lower case of context name
-INGRESS_B_TYPE="LoadBalancer"
-
-ADMIN_CLUSTER_DIR=cluster-admin
-BOOKINFO_DEMO_DIR=app
-ISTIO_FILE_NAME="../istio.yaml"
 
 create_ns()
 {
@@ -35,13 +18,18 @@ setup_istio()
 {
     # Cluster A
     # Install Istio
-    sed -e "s/__INGRESS_GATEWAY_TYPE__/$INGRESS_A_TYPE/g" \
+    sed -e "s/__INGRESS_GATEWAY_TYPE__/LoadBalancer/g" \
         $ISTIO_FILE_NAME | kubectl --context=$CLUSTER_A apply -f -
     # Install CoreDNS
     kubectl apply -f $ADMIN_CLUSTER_DIR/cluster-a/coredns.yaml --context=$CLUSTER_A
     
     # Cluster B
     # Install Istio
+    if [ $CLUSTER_B_TYPE = "ICP" ]; then
+        INGRESS_B_TYPE="NodePort"
+    else
+	    INGRESS_B_TYPE="LoadBalancer"
+    fi
     sed -e "s/__INGRESS_GATEWAY_TYPE__/$INGRESS_B_TYPE/g" \
         $ISTIO_FILE_NAME | kubectl --context=$CLUSTER_B apply -f -
     # Install CoreDNS
@@ -52,9 +40,9 @@ configure_cross_cluster()
 {
     # Cluster A
     CORE_DNS_IP=`kubectl get svc core-dns -n istio-system -o jsonpath='{.spec.clusterIP}' --context=$CLUSTER_A`
-    if [ $INGRESS_B_TYPE = "NodePort" ]; then
-	    INGRESS_B_IP=`kubectl get po -l istio=ingressgateway -n istio-system -o jsonpath='{.items[0].status.hostIP}' --context=$CLUSTER_B`
-	    INGRESS_B_PORT=`kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].nodePort}' --context=$CLUSTER_B`
+    if [ $CLUSTER_B_TYPE = "ICP" ]; then
+        INGRESS_B_IP=`kubectl get svc istio-ingressgateway -n istio-system -o jsonpath='{.spec.clusterIP}' --context=$CLUSTER_B`
+        INGRESS_B_PORT=`kubectl get svc istio-ingressgateway -n istio-system -o jsonpath='{.spec.ports[?(@.name=="http2")].port}' --context=$CLUSTER_B`
     else
 	    INGRESS_B_IP=`kubectl get svc istio-ingressgateway -n istio-system -o jsonpath='{.status.loadBalancer.ingress[*].ip}' --context=$CLUSTER_B`
 	    INGRESS_B_PORT=80
@@ -66,13 +54,8 @@ configure_cross_cluster()
 
     # Cluster B
     CORE_DNS_IP=`kubectl get svc core-dns -n istio-system -o jsonpath='{.spec.clusterIP}' --context=$CLUSTER_B`
-    if [ $INGRESS_A_TYPE = "NodePort" ]; then
-	    INGRESS_A_IP=`kubectl get po -l istio=ingressgateway -n istio-system -o jsonpath='{.items[0].status.hostIP}' --context=$CLUSTER_A`
-	    INGRESS_A_PORT=`kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].nodePort}' --context=$CLUSTER_A`
-    else
-	    INGRESS_A_IP=`kubectl get svc istio-ingressgateway -n istio-system -o jsonpath='{.status.loadBalancer.ingress[*].ip}' --context=$CLUSTER_A`
-	    INGRESS_A_PORT=80
-    fi
+    INGRESS_A_IP=`kubectl get svc istio-ingressgateway -n istio-system -o jsonpath='{.status.loadBalancer.ingress[*].ip}' --context=$CLUSTER_A`
+	INGRESS_A_PORT=80
 	sed -e "s/INGRESS_IP_ADDRESS/$INGRESS_A_IP/g" \
 	    -e "s/INGRESS_PORT/$INGRESS_A_PORT/g" \
 		-e "s/CORE_DNS_IP/$CORE_DNS_IP/g" \
@@ -85,12 +68,20 @@ bookinfo_app()
 
     for yaml in $BOOKINFO_DEMO_DIR/cluster-a/*.yaml
     do
-        kubectl apply -f $yaml --context=$CLUSTER_A
+        if [ "$MANUAL_INJECTION" = true ]; then
+            kubectl apply --context=$CLUSTER_A -f <(../istioctl kube-inject -f $yaml)
+        else
+            kubectl apply --context=$CLUSTER_A -f $yaml
+        fi
     done
 
     for yaml in $BOOKINFO_DEMO_DIR/cluster-b/*.yaml
     do
-        kubectl apply -f $yaml --context=$CLUSTER_B
+        if [ "$MANUAL_INJECTION" = true ]; then
+            kubectl apply --context=$CLUSTER_B -f <(../istioctl kube-inject -f $yaml)
+        else
+            kubectl apply --context=$CLUSTER_B -f $yaml
+        fi
     done
 }
 

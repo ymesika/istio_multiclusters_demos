@@ -3,14 +3,7 @@
 set +e
 set +x
 
-# EDIT ME - Cluster A Kubeconfig context
-CLUSTER_A="cluster-a"
-
-# EDIT ME - Cluster B Kubeconfig context
-CLUSTER_B="cluster-b"
-
-BOOKINFO_DEMO_DIR="app"
-ISTIO_FILE_NAME="../istio.yaml"
+. ./config.sh
 
 # Delete what was created by bookinfo_app
 for yaml in $BOOKINFO_DEMO_DIR/cluster-a/*.yaml
