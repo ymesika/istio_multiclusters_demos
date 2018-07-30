@@ -1,5 +1,5 @@
 # Istio Multi-Clusters Demos
-A bunch of demos that shows how to install and configure Istio on a Multi-Clusters environment.
+A bunch of demos that show how to install and configure Istio on a Multi-Clusters environment.
 
 The approach taken in this demos is to use the Istio Ingress and Egress Gateways to integrate two clusters. This is different than the one used with [Istio Multicluster](https://istio.io/docs/setup/kubernetes/multicluster-install/) and can be used for cases when the [Istio Multicluster Prerequisites](https://istio.io/docs/setup/kubernetes/multicluster-install/#prerequisites) can't be fulfilled, when its design of one big mesh isn't desired or as an alternative way to deploy Multi-Cluster.
 
