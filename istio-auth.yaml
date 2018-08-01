@@ -1133,7 +1133,7 @@ spec:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: istio-citadel-service-account
+  name: istio-citadel-service-account-__CLUSTERNAME__
   namespace: istio-system
   labels:
     app: security
@@ -2545,7 +2545,7 @@ roleRef:
   name: istio-citadel-istio-system
 subjects:
   - kind: ServiceAccount
-    name: istio-citadel-service-account
+    name: istio-citadel-service-account-__CLUSTERNAME__
     namespace: istio-system
 
 ---
@@ -3892,6 +3892,7 @@ spec:
         - name: citadel
           image: "gcr.io/istio-release/citadel:1.0.0"
           imagePullPolicy: IfNotPresent
+          command: ["/usr/local/bin/istio_ca"]
           args:
             - --append-dns-names=true
             - --grpc-port=8060
@@ -3902,11 +3903,13 @@ spec:
             - --signing-key=/etc/cacerts/ca-key.pem
             - --root-cert=/etc/cacerts/root-cert.pem
             - --cert-chain=/etc/cacerts/cert-chain.pem
-            - --upstream-ca-address=istio-standalone-citadel.istio-system:8060
-            - --org=test-org #customize ME
+            - --upstream-ca-address=istio-standalone-citadel:8061
+            - --org=test-org
             - --requested-ca-cert-ttl=48h
             - --workload-cert-ttl=21h
-          resources: {}
+          resources:
+            requests:
+              cpu: 10m
           volumeMounts:
           - name: cacerts
             mountPath: /etc/cacerts
