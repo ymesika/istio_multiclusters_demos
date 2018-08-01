@@ -4,12 +4,19 @@ In this demo we took Istio's [Bookinfo sample application](https://istio.io/docs
 
 The communication between the clusters is going through a set of Ingress and Egress Gateways that both clusters have by deploying Istio to each one of them.
 
-The Bookinfo demo has been tested on the following topolgies:
+The Bookinfo demo has been tested on the following topologies:
 1. Two IBM Kubernetes Clusters (IKS-IKS) where their ingress gateways are publicly available.
 1. One IBM Kubernetes Cluster and one IBM Cloud Private (IKS-ICP) where the ICP is not accessible from outside of the organization network but can access the IKS cluster. We are using Strongswan VPN tunnel initiated by the IKS to connect the two clusters.
 
 ## Prerequisites
-1. Make sure the two target clusters are available as contexes in the Kubeconfig path. The kubeconfig context name for each one of the clusters will be used as configuration parameters to the installation scripts.
+1. Make sure the two target clusters are available as contexts in the Kubeconfig path.
+
+    ```console
+    export KUBECONFIG=[location_of_kubeconfig_for_A_context]:[location_of_kubeconfig_for_B_context]
+    kubectl config get-contexts
+    ```
+
+    The kubeconfig context name for each one of the clusters will be used as configuration parameters to the installation scripts.
 
     You can test that both clusters are accessible with the context name by executing the command:
     ```sh
