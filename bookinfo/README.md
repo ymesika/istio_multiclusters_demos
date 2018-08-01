@@ -4,7 +4,7 @@ In this demo we took Istio's [Bookinfo sample application](https://istio.io/docs
 
 The communication between the clusters is going through a set of Ingress and Egress Gateways that both clusters have by deploying Istio to each one of them.
 
-The Bookinfo demo has been tested on the following topologies:
+The Bookinfo demo has been tested with the following topologies:
 1. Two IBM Kubernetes Clusters (IKS-IKS) where their ingress gateways are publicly available.
 1. One IBM Kubernetes Cluster and one IBM Cloud Private (IKS-ICP) where the ICP is not accessible from outside of the organization network but can access the IKS cluster. We are using Strongswan VPN tunnel initiated by the IKS to connect the two clusters.
 
@@ -37,12 +37,12 @@ The Bookinfo demo has been tested on the following topologies:
     ```sh
     ./install.sh
     ```
-1. The scripts will pause after installing Istio to both cluster and wait for you to press any key. Before continuing make sure all Istio pods are running on *both* clusters:
+1. The script will pause after installing Istio on both clusters and wait for you to press any key. Before continuing, make sure all Istio pods are running on *both* clusters:
     ```sh
     kubectl get pods -n istio-system --context=<cluster_A_context>
     kubectl get pods -n istio-system --context=<cluster_B_context>
     ```
-1. The script continues and the Bookinfo web page URL will be printed at the end. You can open this URL in your browser but as the deployment of the app takes few seconds you might need to refresh to see all information for that app.
+1. The script continues and the Bookinfo web page URL will be printed at the end. You can open this URL in your browser but as the deployment of the app takes few seconds you may need to refresh to see all information for that app.
 
 ## Connect Private and Public Clusters with Strongswan VPN
 `strongSwan` is used to setup a IPSec VPN tunnel between clusters and share subnets of Kubernetes Pods and Services to remote clusters. As such, the deployment has two parts where in one the strongSwan is deployed on the public cluster as a VPN "server" and the other part installing the strongSwan as a "client" on the private cluster. Because the private cluster can access the public one but not vice versa, the "client" is the one that initiates the VPN tunnel.
