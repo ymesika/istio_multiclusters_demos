@@ -948,7 +948,7 @@ metadata:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: istio-citadel-service-account-__CLUSTERNAME__
+  name: istio-cleanup-secrets-service-account
   namespace: istio-system
   annotations:
     "helm.sh/hook": post-delete
