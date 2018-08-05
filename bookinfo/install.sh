@@ -21,7 +21,7 @@ setup_istio()
     sed -e "s/__INGRESS_GATEWAY_TYPE__/LoadBalancer/g" \
         $ISTIO_FILE_NAME | kubectl --context=$CLUSTER_A apply -f -
     # Install CoreDNS
-    kubectl apply -f $ADMIN_CLUSTER_DIR/cluster-a/coredns.yaml --context=$CLUSTER_A
+    kubectl apply -f $ADMIN_CLUSTER_DIR/coredns.yaml --context=$CLUSTER_A
     
     # Cluster B
     # Install Istio
@@ -33,7 +33,7 @@ setup_istio()
     sed -e "s/__INGRESS_GATEWAY_TYPE__/$INGRESS_B_TYPE/g" \
         $ISTIO_FILE_NAME | kubectl --context=$CLUSTER_B apply -f -
     # Install CoreDNS
-    kubectl apply -f $ADMIN_CLUSTER_DIR/cluster-b/coredns.yaml --context=$CLUSTER_B
+    kubectl apply -f $ADMIN_CLUSTER_DIR/coredns.yaml --context=$CLUSTER_B
 }
 
 configure_cross_cluster()
