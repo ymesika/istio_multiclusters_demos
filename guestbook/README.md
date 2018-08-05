@@ -66,3 +66,10 @@ Watson Tone Analyzer detects the tone from the words that users enter into the G
     kubectl get pods -n istio-system --context=<cluster_B_context>
     ```
 1. The script continues and the Guestbook web page URL will be printed at the end. You can open this URL in your browser but as the deployment of the app takes few seconds you may need to refresh to see all information for that app.
+
+## Verifying
+If the integration between the two clusters has been established you should see the Tone Analyzer service response added in the form of text emoticons to the Guestbook history.
+1. Launch the Guestbook web page by opening in your browser the URL printed at the end of the installation
+1. Type in the Guestbook text field a sentence (e.g. `I just love this demo`) and hit the submit button
+1. The history text at the top should show the sentence you entered along with a text emoticon based on the result from the Analyzer service. E.g.:  
+```I just love this demo : Joy (✿◠‿◠)```
