@@ -6,15 +6,8 @@ set +x
 . ./config.sh
 
 # Delete what was created by bookinfo_app
-for yaml in $BOOKINFO_DEMO_DIR/cluster-a/*.yaml
-do
-    kubectl delete -f $yaml --context=$CLUSTER_A
-done
-
-for yaml in $BOOKINFO_DEMO_DIR/cluster-b/*.yaml
-do
-    kubectl delete -f $yaml --context=$CLUSTER_B
-done
+kubectl delete -f $BOOKINFO_DEMO_DIR/cluster-a/ --context=$CLUSTER_A
+kubectl delete -f $BOOKINFO_DEMO_DIR/cluster-b/ --context=$CLUSTER_B
 
 # Delete what was created by configure_cross_cluster
 kubectl delete -f cluster-admin/cluster-a/cross-cluster.yaml --context=$CLUSTER_A
