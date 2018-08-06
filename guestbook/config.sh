@@ -4,6 +4,10 @@ CLUSTER_A="cluster-a"
 # EDIT ME - Cluster B Kubeconfig context
 CLUSTER_B="cluster-b"
 
+# EDIT ME - Watson Tone Analyzer service credentials
+TONE_ANALYZER_USERNAME="username"
+TONE_ANALYZER_PASSWORD="password"
+
 # EDIT ME - "ICP" for IBM Cloud Private cluster or any other value for 
 # other cluster types (e.g. IKS)
 CLUSTER_B_TYPE="IKS"

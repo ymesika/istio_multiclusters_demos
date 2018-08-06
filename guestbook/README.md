@@ -45,14 +45,13 @@ Watson Tone Analyzer detects the tone from the words that users enter into the G
       ibmcloud service key-show my-tone-analyzer-service myKey
       ```
  
-5. Open the `app/cluster-b/analyzer-deployment.yaml` file and delete the `#` from the `env var` section to un-comment the username and password fields.
- 
-6. Add the username and password that you retrieved earlier and save your changes.
+> Save the **username** and **password** for your `config.sh` file in the next step.
 
 ## Installing
 1. Modify the `config.sh` file and set the following parameters:
     1. `CLUSTER_A` should hold the Kubeconfig context for the 1st cluster
     1. `CLUSTER_B` should hold the Kubeconfig context for the 2nd cluster
+    1. `TONE_ANALYZER_USERNAME` and `TONE_ANALYZER_PASSWORD` should hold your credentials for the Watson Tone Analyzer service from previous step
     1. `CLUSTER_B_TYPE` should be set to `"ICP"` if the 2nd cluster is an ICP. Use any other value if the 2nd cluster is a public one.
     1. `MANUAL_INJECTION` will toggle whether to run a `istioctl inject` to inject the sidecar to the deployed app pods. The app is being deployed to the `default` namespace and it depends on whether the automatic injection label is applied to that namespace or not. The main reason for disabling the automatic injection is when having an IKS with VPN pods deployed to the default namespace. In this case it's not desired that the VPN pods will be auto-injected.
 1. Make sure both clusters are accessible

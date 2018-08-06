@@ -23,10 +23,10 @@ spec:
             cpu: 100m
             memory: 100Mi
         env:
-        #- name: VCAP_SERVICES_TONE_ANALYZER_0_CREDENTIALS_USERNAME
-        #  value: ...
-        #- name: VCAP_SERVICES_TONE_ANALYZER_0_CREDENTIALS_PASSWORD
-        #  value: ...
+        - name: VCAP_SERVICES_TONE_ANALYZER_0_CREDENTIALS_USERNAME
+          value: __TONE_ANALYZER_USERNAME__
+        - name: VCAP_SERVICES_TONE_ANALYZER_0_CREDENTIALS_PASSWORD
+          value: __TONE_ANALYZER_PASSWORD__
         - name: USE_HTTPS
           value: "True"
         ports:

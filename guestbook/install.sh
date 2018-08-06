@@ -78,9 +78,14 @@ install_app()
     for yaml in $APP_DEMO_DIR/cluster-b/*.yaml
     do
         if [ "$MANUAL_INJECTION" = true ]; then
-            kubectl apply --context=$CLUSTER_B -f <(../istioctl kube-inject -f $yaml)
+            kubectl apply --context=$CLUSTER_B -f <(../istioctl kube-inject --context $CLUSTER_B \
+                -f <(sed -e "s/__TONE_ANALYZER_USERNAME__/$TONE_ANALYZER_USERNAME/g" \
+                -e "s/__TONE_ANALYZER_PASSWORD__/$TONE_ANALYZER_PASSWORD/g" $yaml))
         else
             kubectl apply --context=$CLUSTER_B -f $yaml
+            sed -e "s/__TONE_ANALYZER_USERNAME__/$TONE_ANALYZER_USERNAME/g" \
+            -e "s/__TONE_ANALYZER_PASSWORD__/$TONE_ANALYZER_PASSWORD/g" \
+            $yaml | kubectl --context=$CLUSTER_B apply -f -
         fi
     done
 }
