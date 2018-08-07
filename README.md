@@ -5,6 +5,7 @@ The approach taken in this demos is to use the Istio Ingress and Egress Gateways
 
 The following demos are available:
 * [Distributed Bookinfo](bookinfo/README.md) - This demonstrates the use of Istio ingress/egress gatways to integrate two clusters where both of them are public (e.g. IBM Kubernets Clusters) or one of them is private (e.g. IBM Cloud Private).
+* [Distributed Guestbook](guestbook/README.md) - Similar to the Distributed Bookinfo demo but with the [IBM Guestbook](https://github.com/IBM/guestbook) as the demo distributed app.
 * [Secured Distributed Bookinfo](bookinfo_secured/README.md) - Similar to the Distributed Bookinfo demo with the change of using a Root CA to enable an end-to-end secured communication.
 
 # Credits
